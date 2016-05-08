@@ -374,7 +374,7 @@ class Manager{
 		}
 
 		level_wall.push_back(Wall (17,-13,1,27)); // R wall
-		level_wall.push_back(Wall(-17,-13,1,27)); // L wall
+		level_wall.push_back(Wall(-16,-13,-1,27)); // L wall
 		level_wall.push_back(Wall(-17,13,35,1));  // T wall
 
 	};
