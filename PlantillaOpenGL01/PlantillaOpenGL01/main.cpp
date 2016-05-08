@@ -15,8 +15,9 @@ using namespace std;
 #define number_bonus 6
 #define brick_width 3.0f
 #define brick_height 1.0f
-
-
+#define platform_width 4.0f
+#define platform_height 1.5f
+#define platform_y_position -12
 
 
 
@@ -195,6 +196,37 @@ void renderGrid(){
     glPopMatrix();
 }
 
+class Platform {
+	public:
+		float x_position;
+		float y_position;
+		float width;
+		float height;
+		float color [3];
+
+	Platform(float x, float y, float w, float h){
+		x_position = x;
+		y_position = y;
+		width = w;
+		height = h;
+	};
+
+	void drawPlatform(){
+		glPushMatrix();
+			glColor3f(255,0,0);
+			drawLine(x_position+width/2,y_position+height/2,x_position-width/2,y_position+height/2);
+			drawLine(x_position-width/2,y_position+height/2,x_position-width/2,y_position-height/2);
+			drawLine(x_position+width/2,y_position-height/2,x_position-width/2,y_position-height/2);
+			drawLine(x_position+width/2,y_position-height/2,x_position+width/2,y_position+height/2);
+		glPopMatrix();
+	};
+
+	void movePlatform(float walk, int direction){
+		//direction is 1 or -1
+		x_position += walk*direction;
+	};
+};
+
 class Brick{
 	public:
 		int id;
@@ -311,10 +343,14 @@ void render(){
 	gluLookAt(0.0, 0.0,5.0,
 			  0.0, 0.0, 0.0,
               0.0,1.0, 0.0);
-	renderGrid();
+	//renderGrid();
 	drawPoint(0,0,50,1,1,1);
 	Manager test(1,-13,11);
+	Platform platform(0.0,-12.0,4.0,1.5);
+	platform.movePlatform(8.0,1);
+	platform.drawPlatform();
 	test.drawBricks();
+
 	glutSwapBuffers();
 	//11x 11y
 }
