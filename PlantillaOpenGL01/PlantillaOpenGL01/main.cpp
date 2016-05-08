@@ -15,6 +15,9 @@ using namespace std;
 #define number_bonus 6
 #define brick_width 3.0f
 #define brick_height 1.0f
+#define brick_gap 1.0f
+#define brick_x_start -13
+#define brick_y_start 10
 
 int frameCount = 0;
 float currentTime = 0, previousTime = 0;
@@ -301,17 +304,40 @@ class Ball{
 
 };
 
+class Wall{
+	public:
+		float x;
+		float y;
+		float width;
+		float height;
+	Wall(float x_position,float y_position, float w, float h){
+		x = x_position;
+		y = y_position;
+		width = w;
+		height = h;
+	}
+	void draw(){
+		glPushMatrix();
+			glColor3f(0,1,0);
+			drawLine(x,y,x,y+height);
+			drawLine(x,y+height,x+width,y+height);
+			drawLine(x+width,y+height,x+width,y);
+			drawLine(x+width,y,x,y);
+		glPopMatrix();
+	};
+};
 
 class Manager{
 	public:
 		std::vector<Brick>  level_bricks;
+		std::vector<Wall>  level_wall;
 		Ball ball;
 		float brick_separation;
 		float initial_x;
 		float initial_y;
 
-	Manager(float brick_gap,float start_x, float start_y):ball(1,1,0.45,0.02){
-		brick_separation = brick_gap;
+	Manager(float gap,float start_x, float start_y):ball(1,1,0.45,0.02){
+		brick_separation = gap;
 		initial_x = start_x;
 		initial_y = start_y;
 		bool random_special;
@@ -327,7 +353,7 @@ class Manager{
 
 		for (int i = 0; i<number_bricks;i++){
 			if ((i % 7 == 0) && i != 0){
-				acc_y -= (brick_height + brick_gap);
+				acc_y -= (brick_height + gap);
 				acc_x = start_x;
 			}
 			if (countr_special < number_special ) random_special = ((rand() % 20) <= probability_special);
@@ -347,6 +373,10 @@ class Manager{
 			acc_x += brick_width + brick_separation;
 		}
 
+		level_wall.push_back(Wall (17,-13,1,27)); // R wall
+		level_wall.push_back(Wall(-16,-13,-1,27)); // L wall
+		level_wall.push_back(Wall(-17,13,35,1));  // T wall
+
 	};
 
 	void update(){
@@ -358,12 +388,15 @@ class Manager{
 			(*brick).draw();
 			//(*brick).print();
 		}
+		for (std::vector<Wall>::iterator wall = level_wall.begin() ; wall != level_wall.end(); ++wall){
+			(*wall).draw();
+		}
 		ball.draw();
 		
 	}
 };
 
-Manager sceneManager(1,-13,11);
+Manager sceneManager(brick_gap,brick_x_start,brick_y_start);
 
 void render(){
 	float w = glutGet(GLUT_WINDOW_WIDTH);
@@ -384,7 +417,7 @@ void render(){
 	printf("%f \n",fps);
 	glutSwapBuffers();
 	//11x 11y
-	
+	//15x23
 }
 
 
