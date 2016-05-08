@@ -16,9 +16,9 @@ using namespace std;
 #define brick_width 3.0f
 #define brick_height 1.0f
 #define platform_width 4.0f
-#define platform_height 1.5f
-#define platform_y_position -12
-
+#define platform_height 0.5f
+#define platform_y_position -12.0f
+float platform_x_position = 0.0f;
 
 
 
@@ -138,17 +138,25 @@ void keyPressed (unsigned char key, int x, int y) {
 		case '6':
 
 			break;
-		case 'a':
-		case 'z':
+		case 'a': 
+			if(platform_x_position > -16.0f){platform_x_position -= 1.5f;}
+			break; 
+		case 'z': 
 		case 's':
 		case 'x':
 		case 'd':
+			if(platform_x_position < 16.0f){platform_x_position += 1.5f;}
+			break;
 		case 'c':
 		case 'A':
+			if(platform_x_position > -16.0f){platform_x_position -= 1.5f;}
+			break; 
 		case 'Z':
 		case 'S':
 		case 'X':
 		case 'D':
+			if(platform_x_position < 16.0f){platform_x_position += 1.5f;}
+			break;
 		case 'C':
 
 			break;
@@ -213,7 +221,7 @@ class Platform {
 
 	void drawPlatform(){
 		glPushMatrix();
-			glColor3f(255,0,0);
+			glColor3f(0,0,255);
 			drawLine(x_position+width/2,y_position+height/2,x_position-width/2,y_position+height/2);
 			drawLine(x_position-width/2,y_position+height/2,x_position-width/2,y_position-height/2);
 			drawLine(x_position+width/2,y_position-height/2,x_position-width/2,y_position-height/2);
@@ -221,11 +229,13 @@ class Platform {
 		glPopMatrix();
 	};
 
-	void movePlatform(float walk, int direction){
+	void setPlatformXposition(float x){
 		//direction is 1 or -1
-		x_position += walk*direction;
+		x_position = x;
 	};
 };
+
+
 
 class Brick{
 	public:
@@ -325,7 +335,7 @@ class Manager{
 	void drawBricks(){
 		for (std::vector<Brick>::iterator brick = level_bricks.begin() ; brick != level_bricks.end(); ++brick){
 			(*brick).drawBrick();
-			(*brick).print();
+			//(*brick).print();
 		}
 		
 	}
@@ -346,8 +356,8 @@ void render(){
 	//renderGrid();
 	drawPoint(0,0,50,1,1,1);
 	Manager test(1,-13,11);
-	Platform platform(0.0,-12.0,4.0,1.5);
-	platform.movePlatform(8.0,1);
+	Platform platform(0.0,platform_y_position,platform_width,platform_height);
+	platform.setPlatformXposition(platform_x_position);
 	platform.drawPlatform();
 	test.drawBricks();
 
@@ -375,6 +385,7 @@ int main (int argc, char** argv) {
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 	glutReshapeFunc(changeViewport);
 	glutDisplayFunc(render);
+	glutIdleFunc(render);
 	glutKeyboardFunc(keyPressed);
 	GLenum err = glewInit();
 	if (GLEW_OK != err) {
