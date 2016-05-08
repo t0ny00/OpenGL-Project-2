@@ -16,14 +16,11 @@ using namespace std;
 #define brick_width 3.0f
 #define brick_height 1.0f
 
-
-
-
-
-
-void init(){
-
-}
+int frameCount = 0;
+float currentTime = 0, previousTime = 0;
+float currentTimeDelta = 0, previousTimeDelta = 0;
+float timeDelta = 0;
+float fps = 0;
 
 void ejesCoordenada(float w) {
 	
@@ -175,7 +172,7 @@ void renderGrid(){
 
 	glPushMatrix();
     glColor3f( 0.0f, 0.7f, 0.7f );
-	glLineWidth(3);
+	glLineWidth(0.6);
     glBegin( GL_LINES );
     zExtent = DEF_floorGridScale * DEF_floorGridZSteps;
     for(loopX = -DEF_floorGridXSteps; loopX <= DEF_floorGridXSteps; loopX++ )
@@ -229,7 +226,7 @@ class Brick{
 		};
 	};
 
-	void drawBrick(){
+	void draw(){
 		glPushMatrix();
 			glColor3f(color[0],color[1],color[2]);
 			drawLine(x_position,y_position,x_position,y_position+height);
@@ -244,14 +241,76 @@ class Brick{
 	};
 };
 
+
+void calculateFPS()
+{
+    //  Increase frame count
+    frameCount++;
+
+    //  Get the number of milliseconds since glutInit called 
+    //  (or first call to glutGet(GLUT ELAPSED TIME)).
+    currentTime = glutGet(GLUT_ELAPSED_TIME);
+
+    //  Calculate time passed
+    float timeInterval = currentTime - previousTime;
+
+    if(timeInterval > 1000)
+    {
+        //  calculate the number of frames per second
+        fps = frameCount / (timeInterval / 1000.0f);
+
+        //  Set time
+		previousTime = currentTime;
+
+        //  Reset frame count
+        frameCount = 0;
+    }
+}
+
+class Ball{
+	public:
+		float x_position;
+		float y_position;
+		float radius;
+		float speed;
+		float x_magnitude;
+		float y_magnitude;
+		
+		Ball(float x, float y, float r, float spe){
+			x_position = x;
+			y_position = y;
+			radius = r;
+			speed = spe;
+			x_magnitude = 1;
+			y_magnitude = 1;
+		};
+
+		void updatePosition(){
+			x_position += speed*x_magnitude*timeDelta;
+			y_position += speed*y_magnitude*timeDelta;
+		};
+
+		void draw(){
+			drawFilledCircle(x_position,y_position,radius);
+		};
+
+		void multiplySpeed(int alpha) {
+			speed *= alpha;
+		};
+
+
+};
+
+
 class Manager{
 	public:
 		std::vector<Brick>  level_bricks;
+		Ball ball;
 		float brick_separation;
 		float initial_x;
 		float initial_y;
 
-	Manager(float brick_gap,float start_x, float start_y){
+	Manager(float brick_gap,float start_x, float start_y):ball(1,1,0.45,0.02){
 		brick_separation = brick_gap;
 		initial_x = start_x;
 		initial_y = start_y;
@@ -290,14 +349,21 @@ class Manager{
 
 	};
 
-	void drawBricks(){
+	void update(){
+		ball.updatePosition();
+	};
+
+	void renderScene(){
 		for (std::vector<Brick>::iterator brick = level_bricks.begin() ; brick != level_bricks.end(); ++brick){
-			(*brick).drawBrick();
-			(*brick).print();
+			(*brick).draw();
+			//(*brick).print();
 		}
+		ball.draw();
 		
 	}
 };
+
+Manager sceneManager(1,-13,11);
 
 void render(){
 	float w = glutGet(GLUT_WINDOW_WIDTH);
@@ -305,6 +371,7 @@ void render(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	calculateFPS();
 	gluPerspective(140.0, w/h, 3.0, 10.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -313,13 +380,27 @@ void render(){
               0.0,1.0, 0.0);
 	renderGrid();
 	drawPoint(0,0,50,1,1,1);
-	Manager test(1,-13,11);
-	test.drawBricks();
+	sceneManager.renderScene();
+	printf("%f \n",fps);
 	glutSwapBuffers();
 	//11x 11y
+	
 }
 
 
+void init(){
+
+};
+
+void idle(){
+	currentTimeDelta = glutGet(GLUT_ELAPSED_TIME);
+
+    //  Calculate time passed
+    timeDelta = currentTimeDelta - previousTimeDelta;
+	previousTimeDelta = currentTimeDelta;
+	sceneManager.update();
+	glutPostRedisplay();
+}
 
 int main (int argc, char** argv) {
 
@@ -338,6 +419,7 @@ int main (int argc, char** argv) {
 	glEnable(GL_POINT_SMOOTH);
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 	glutReshapeFunc(changeViewport);
+	glutIdleFunc(idle);
 	glutDisplayFunc(render);
 	glutKeyboardFunc(keyPressed);
 	GLenum err = glewInit();
