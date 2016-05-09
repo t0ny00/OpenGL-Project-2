@@ -66,8 +66,6 @@ void ejesCoordenada(float w) {
 	glLineWidth(1.0);
 }
 
-
-
 void drawPoint (int x, int y, int size, float r,float g, float b){ 
 	glPointSize(size);
 	glBegin(GL_POINTS);
@@ -98,7 +96,6 @@ void drawCircle(int x, int y, int radius, int size, float r,float g, float b){
 	glEnd();
 }
 
-
 void drawFilledCircle(GLfloat x, GLfloat y, GLfloat radius){
 	int i;
 	int triangleAmount = 20;
@@ -114,11 +111,6 @@ void drawFilledCircle(GLfloat x, GLfloat y, GLfloat radius){
 		}
 	glEnd();
 }
-
-
-
-
-
 
 void keyPressed (unsigned char key, int x, int y) {  
 	switch (key)
@@ -245,6 +237,10 @@ class Brick{
 	};
 };
 
+bool pointInsideCircle(float circle_x,float circle_y,float radius, float point_x,float point_y){
+	if (powf(point_x - circle_x,2.0) + powf(point_y - circle_y,2.0) < (powf(radius,2.0))) return true;
+	return false;
+};
 
 void calculateFPS()
 {
@@ -290,8 +286,8 @@ class Ball{
 		};
 
 		void updatePosition(){
-			x_position += speed*x_magnitude*timeDelta;
-			y_position += speed*y_magnitude*timeDelta;
+			x_position += speed*x_magnitude;//*timeDelta;
+			y_position += speed*y_magnitude;//*timeDelta;
 		};
 
 		void draw(){
@@ -307,13 +303,11 @@ class Ball{
 
 class Wall{
 	public:
-		char location;
 		float x;
 		float y;
 		float width;
-		float height;
-	Wall(char locat,float x_position,float y_position, float w, float h){
-		location = locat;
+		float height; 
+	Wall(float x_position,float y_position, float w, float h){
 		x = x_position;
 		y = y_position;
 		width = w;
@@ -339,7 +333,7 @@ class Manager{
 		float initial_x;
 		float initial_y;
 
-	Manager(float gap,float start_x, float start_y):ball(15,10,0.5,0.005){
+	Manager(float gap,float start_x, float start_y):ball(-12,12,0.5,0.01){
 		brick_separation = gap;
 		initial_x = start_x;
 		initial_y = start_y;
@@ -354,6 +348,7 @@ class Manager{
 		float acc_y = initial_y;
 		srand( time(0));
 
+		/*---------------- Bricks creation------------------------*/
 		for (int i = 0; i<number_bricks;i++){
 			if ((i % 7 == 0) && i != 0){
 				acc_y -= (brick_height + gap);
@@ -376,16 +371,18 @@ class Manager{
 			acc_x += brick_width + brick_separation;
 		}
 
-		level_wall.push_back(Wall ('r',17,-13,1,27)); // R wall
-		level_wall.push_back(Wall('l',-16,-13,-1,27)); // L wall
-		level_wall.push_back(Wall('t',-17,13,35,1));  // T wall
-
+		level_wall.push_back(Wall (17,-13,1,27)); // R wall
+		level_wall.push_back(Wall(-17,-13,1,27)); // L wall
+		level_wall.push_back(Wall(-17,13,35,1));  // T wall
+		
 	};
 
 	void update(){
 		checkCollisionBallWall();
-		ball.updatePosition();
 		checkCollisionBallBrick();
+		remove_bricks();
+		ball.updatePosition();
+		
 		
 	};
 
@@ -394,40 +391,42 @@ class Manager{
 		double y_point;
 		double wall_center_x;
 		double wall_center_y;
-		for (std::vector<Wall>::iterator wall = level_wall.begin() ; wall != level_wall.end(); ++wall){
-			wall_center_x = (*wall).x + (*wall).width/2;
-			wall_center_y = (*wall).y + (*wall).height/2;
+		for (int j=0; j < level_wall.size(); j++){
+			wall_center_x = level_wall[j].x + level_wall[j].width/2;
+			wall_center_y = level_wall[j].y + level_wall[j].height/2;
 			for (int i = 0; i<4;i++){
 				y_point = (float)( ball.y_position + ball.radius * sin( i*90*PI/180 ) );
 				x_point = (float)( ball.x_position + ball.radius * cos( i*90*PI/180 ) );
 				/*printf("I: %d \n",i);
 				printf("X: %f \n",x_point);
 				printf("Y: %f \n",y_point);
-				printf("Y WALL: %f \n",(brick_center_y - (.5*(*wall).height)));
-				printf("X WALL: %f \n",(brick_center_x - (.5*(*wall).width)));*/
-				if ((x_point <= (wall_center_x + (.5*(*wall).width)) && x_point >= (wall_center_x - (.5*(*wall).width))) &&
-					(y_point <= (wall_center_y + (.5*(*wall).height)) && y_point >= (wall_center_y - (.5*(*wall).height)))){
+				printf("Y WALL: %f \n",(wall_center_y - (.5*(*wall).height)));
+				printf("X WALL: %f \n",(wall_center_x - (.5*(*wall).width)));*/
+				if ((x_point <= (wall_center_x + (.5*level_wall[j].width)) && x_point >= (wall_center_x - (.5*level_wall[j].width))) &&
+					(y_point <= (wall_center_y + (.5*level_wall[j].height)) && y_point >= (wall_center_y - (.5*level_wall[j].height)))){
 					if (i == 0 || i == 2) { 
 						ball.x_magnitude *=-1;
-						
+						break;
 					}
 					else{
-						ball.y_magnitude *=-1;};
+						ball.y_magnitude *=-1;
+						break;
+					};
 				};
 			};
 		};
 	};
+	
 	void checkCollisionBallBrick(){
 		double x_point;
 		double y_point;
 		double brick_center_x;
 		double brick_center_y;
-		int counter = 0;
-		int index_to_eliminate;
+		int index_of_collision;
 		bool collision = false;
-		for (std::vector<Brick>::iterator brick = level_bricks.begin() ; brick != level_bricks.end(); ++brick){
-			brick_center_x = (*brick).x_position + (*brick).width/2;
-			brick_center_y = (*brick).y_position + (*brick).height/2;
+		for (int j=0; j < level_bricks.size(); j++){
+			brick_center_x = level_bricks[j].x_position + level_bricks[j].width/2;
+			brick_center_y = level_bricks[j].y_position + level_bricks[j].height/2;
 			for (int i = 0; i<4;i++){
 				y_point = (float)( ball.y_position + ball.radius * sin( i*90*PI/180 ) );
 				x_point = (float)( ball.x_position + ball.radius * cos( i*90*PI/180 ) );
@@ -436,44 +435,35 @@ class Manager{
 				printf("Y: %f \n",y_point);
 				printf("Y WALL: %f \n",(brick_center_y - (.5*(*wall).height)));
 				printf("X WALL: %f \n",(brick_center_x - (.5*(*wall).width)));*/
-				if ((x_point <= (brick_center_x + (.5*(*brick).width)) && x_point >= (brick_center_x - (.5*(*brick).width))) &&
-					(y_point <= (brick_center_y + (.5*(*brick).height)) && y_point >= (brick_center_y - (.5*(*brick).height)))){
+				if ((x_point <= (brick_center_x + (.5*level_bricks[j].width)) && x_point >= (brick_center_x - (.5*level_bricks[j].width))) &&
+					(y_point <= (brick_center_y + (.5*level_bricks[j].height)) && y_point >= (brick_center_y - (.5*level_bricks[j].height)))){
 					if (i == 0 || i == 2) { 
 						ball.x_magnitude *=-1;
 					}
 					else{
 						ball.y_magnitude *=-1;};
-					index_to_eliminate = counter;
+					index_of_collision = j;
 					collision = true;
 				};
 			};
-			if (powf((*brick).x_position - ball.x_position,2.0) + powf((*brick).y_position - ball.y_position,2.0) < (powf(ball.radius,2.0))){
+			
+			if (pointInsideCircle(ball.x_position,ball.y_position,ball.radius,level_bricks[j].x_position,level_bricks[j].y_position) ||
+				pointInsideCircle(ball.x_position,ball.y_position,ball.radius,level_bricks[j].x_position + level_bricks[j].width ,level_bricks[j].y_position) ||
+				pointInsideCircle(ball.x_position,ball.y_position,ball.radius,level_bricks[j].x_position + level_bricks[j].width,level_bricks[j].y_position + level_bricks[j].height) ||
+				pointInsideCircle(ball.x_position,ball.y_position,ball.radius,level_bricks[j].x_position ,level_bricks[j].y_position + level_bricks[j].height)){
 				ball.y_magnitude *=-1;
 				ball.x_magnitude *=-1;
-				index_to_eliminate = counter;
+				index_of_collision = j;
 				collision = true;
 			}
-			else if (powf((*brick).x_position + (*brick).width - ball.x_position,2.0) + powf((*brick).y_position - ball.y_position,2.0) < (powf(ball.radius,2.0))) {
-				ball.y_magnitude *=-1;
-				ball.x_magnitude *=-1;
-				index_to_eliminate = counter;
-				collision = true;
-			}
-			else if (powf((*brick).x_position + (*brick).width - ball.x_position,2.0) + powf((*brick).y_position + (*brick).height - ball.y_position,2.0) < (powf(ball.radius,2.0))) {
-				ball.y_magnitude *=-1;
-				ball.x_magnitude *=-1;
-				index_to_eliminate = counter;
-				collision = true;
-			}
-			else if (powf((*brick).x_position - ball.x_position,2.0) + powf((*brick).y_position + (*brick).height - ball.y_position,2.0) < (powf(ball.radius,2.0))) {
-				ball.y_magnitude *=-1;
-				ball.x_magnitude *=-1;
-				index_to_eliminate = counter;
-				collision = true;
-			}
-			counter++;
 		};
-		if(collision)level_bricks.erase(level_bricks.begin()+index_to_eliminate);
+		if(collision) level_bricks[index_of_collision].hits--;
+	};
+
+	void remove_bricks(){
+		for (int i=0; i < level_bricks.size(); i++){
+			if (level_bricks[i].hits == 0) level_bricks.erase(level_bricks.begin()+i);
+		}
 	};
 
 	void renderScene(){
@@ -507,7 +497,7 @@ void render(){
 	renderGrid();
 	drawPoint(0,0,50,1,1,1);
 	sceneManager.renderScene();
-	printf("%f \n",fps);
+	//printf("%f \n",fps);
 	glutSwapBuffers();
 	//11x 11y
 	//15x23
