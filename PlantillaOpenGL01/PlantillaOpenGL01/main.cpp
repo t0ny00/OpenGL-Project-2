@@ -3,7 +3,7 @@
 #include <GL\freeglut.h>
 #include <vector>
 #include <ctime> // Needed for the true randomization
-
+#include <math.h>
 
 using namespace std;
 #define DEF_floorGridScale	1.0f
@@ -18,6 +18,7 @@ using namespace std;
 #define brick_gap 1.0f
 #define brick_x_start -13
 #define brick_y_start 10
+#define PI 3.14159265
 
 int frameCount = 0;
 float currentTime = 0, previousTime = 0;
@@ -306,11 +307,13 @@ class Ball{
 
 class Wall{
 	public:
+		char location;
 		float x;
 		float y;
 		float width;
 		float height;
-	Wall(float x_position,float y_position, float w, float h){
+	Wall(char locat,float x_position,float y_position, float w, float h){
+		location = locat;
 		x = x_position;
 		y = y_position;
 		width = w;
@@ -336,7 +339,7 @@ class Manager{
 		float initial_x;
 		float initial_y;
 
-	Manager(float gap,float start_x, float start_y):ball(1,1,0.45,0.02){
+	Manager(float gap,float start_x, float start_y):ball(15,10,0.5,0.005){
 		brick_separation = gap;
 		initial_x = start_x;
 		initial_y = start_y;
@@ -373,14 +376,104 @@ class Manager{
 			acc_x += brick_width + brick_separation;
 		}
 
-		level_wall.push_back(Wall (17,-13,1,27)); // R wall
-		level_wall.push_back(Wall(-16,-13,-1,27)); // L wall
-		level_wall.push_back(Wall(-17,13,35,1));  // T wall
+		level_wall.push_back(Wall ('r',17,-13,1,27)); // R wall
+		level_wall.push_back(Wall('l',-16,-13,-1,27)); // L wall
+		level_wall.push_back(Wall('t',-17,13,35,1));  // T wall
 
 	};
 
 	void update(){
+		checkCollisionBallWall();
 		ball.updatePosition();
+		checkCollisionBallBrick();
+		
+	};
+
+	void checkCollisionBallWall(){
+		double x_point;
+		double y_point;
+		double wall_center_x;
+		double wall_center_y;
+		for (std::vector<Wall>::iterator wall = level_wall.begin() ; wall != level_wall.end(); ++wall){
+			wall_center_x = (*wall).x + (*wall).width/2;
+			wall_center_y = (*wall).y + (*wall).height/2;
+			for (int i = 0; i<4;i++){
+				y_point = (float)( ball.y_position + ball.radius * sin( i*90*PI/180 ) );
+				x_point = (float)( ball.x_position + ball.radius * cos( i*90*PI/180 ) );
+				/*printf("I: %d \n",i);
+				printf("X: %f \n",x_point);
+				printf("Y: %f \n",y_point);
+				printf("Y WALL: %f \n",(brick_center_y - (.5*(*wall).height)));
+				printf("X WALL: %f \n",(brick_center_x - (.5*(*wall).width)));*/
+				if ((x_point <= (wall_center_x + (.5*(*wall).width)) && x_point >= (wall_center_x - (.5*(*wall).width))) &&
+					(y_point <= (wall_center_y + (.5*(*wall).height)) && y_point >= (wall_center_y - (.5*(*wall).height)))){
+					if (i == 0 || i == 2) { 
+						ball.x_magnitude *=-1;
+						
+					}
+					else{
+						ball.y_magnitude *=-1;};
+				};
+			};
+		};
+	};
+	void checkCollisionBallBrick(){
+		double x_point;
+		double y_point;
+		double brick_center_x;
+		double brick_center_y;
+		int counter = 0;
+		int index_to_eliminate;
+		bool collision = false;
+		for (std::vector<Brick>::iterator brick = level_bricks.begin() ; brick != level_bricks.end(); ++brick){
+			brick_center_x = (*brick).x_position + (*brick).width/2;
+			brick_center_y = (*brick).y_position + (*brick).height/2;
+			for (int i = 0; i<4;i++){
+				y_point = (float)( ball.y_position + ball.radius * sin( i*90*PI/180 ) );
+				x_point = (float)( ball.x_position + ball.radius * cos( i*90*PI/180 ) );
+				/*printf("I: %d \n",i);
+				printf("X: %f \n",x_point);
+				printf("Y: %f \n",y_point);
+				printf("Y WALL: %f \n",(brick_center_y - (.5*(*wall).height)));
+				printf("X WALL: %f \n",(brick_center_x - (.5*(*wall).width)));*/
+				if ((x_point <= (brick_center_x + (.5*(*brick).width)) && x_point >= (brick_center_x - (.5*(*brick).width))) &&
+					(y_point <= (brick_center_y + (.5*(*brick).height)) && y_point >= (brick_center_y - (.5*(*brick).height)))){
+					if (i == 0 || i == 2) { 
+						ball.x_magnitude *=-1;
+					}
+					else{
+						ball.y_magnitude *=-1;};
+					index_to_eliminate = counter;
+					collision = true;
+				};
+			};
+			if (powf((*brick).x_position - ball.x_position,2.0) + powf((*brick).y_position - ball.y_position,2.0) < (powf(ball.radius,2.0))){
+				ball.y_magnitude *=-1;
+				ball.x_magnitude *=-1;
+				index_to_eliminate = counter;
+				collision = true;
+			}
+			else if (powf((*brick).x_position + (*brick).width - ball.x_position,2.0) + powf((*brick).y_position - ball.y_position,2.0) < (powf(ball.radius,2.0))) {
+				ball.y_magnitude *=-1;
+				ball.x_magnitude *=-1;
+				index_to_eliminate = counter;
+				collision = true;
+			}
+			else if (powf((*brick).x_position + (*brick).width - ball.x_position,2.0) + powf((*brick).y_position + (*brick).height - ball.y_position,2.0) < (powf(ball.radius,2.0))) {
+				ball.y_magnitude *=-1;
+				ball.x_magnitude *=-1;
+				index_to_eliminate = counter;
+				collision = true;
+			}
+			else if (powf((*brick).x_position - ball.x_position,2.0) + powf((*brick).y_position + (*brick).height - ball.y_position,2.0) < (powf(ball.radius,2.0))) {
+				ball.y_magnitude *=-1;
+				ball.x_magnitude *=-1;
+				index_to_eliminate = counter;
+				collision = true;
+			}
+			counter++;
+		};
+		if(collision)level_bricks.erase(level_bricks.begin()+index_to_eliminate);
 	};
 
 	void renderScene(){
