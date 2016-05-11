@@ -18,12 +18,13 @@ using namespace std;
 #define platform_width 4.0f
 #define platform_height 0.5f
 #define platform_y_position -12.0f
-float platform_x_position = 0.0f;
-
+#define platform_x_position 0.0f
 #define brick_gap 1.0f
 #define brick_x_start -13
 #define brick_y_start 10
 #define PI 3.14159265
+#define platform_x_position_delta 1.0f
+
 
 int frameCount = 0;
 float currentTime = 0, previousTime = 0;
@@ -118,22 +119,6 @@ void drawFilledCircle(GLfloat x, GLfloat y, GLfloat radius){
 	glEnd();
 }
 
-void keyPressed (unsigned char key, int x, int y) {  
-	switch (key)
-	{
-		case 'a': 
-		case 'A':
-			if(platform_x_position > -16.0f){platform_x_position -= 1.5f;}
-			break; 
-		case 'd':
-		case 'D':
-			if(platform_x_position < 16.0f){platform_x_position += 1.5f;}
-			break;
-		default:
-			break;
-	};
-	
-}  
 
 void changeViewport(int w, int h) {
 	glViewport(0,0,w,h);
@@ -188,7 +173,7 @@ class Platform {
 		height = h;
 	};
 
-	void drawPlatform(){
+	void draw(){
 		glPushMatrix();
 			glColor3f(0,0,255);
 			drawLine(x_position+width/2,y_position+height/2,x_position-width/2,y_position+height/2);
@@ -198,9 +183,9 @@ class Platform {
 		glPopMatrix();
 	};
 
-	void setPlatformXposition(float x){
+	void movePlatformXPosition(float x){
 		//direction is 1 or -1
-		x_position = x;
+		x_position += x;
 	};
 };
 
@@ -347,11 +332,12 @@ class Manager{
 		std::vector<Brick>  level_bricks;
 		std::vector<Wall>  level_wall;
 		Ball ball;
+		Platform platform;
 		float brick_separation;
 		float initial_x;
 		float initial_y;
 
-	Manager(float gap,float start_x, float start_y):ball(-12,12,0.5,0.01){
+		Manager(float gap,float start_x, float start_y):ball(-12,12,0.5,0.01),platform(platform_x_position,platform_y_position,platform_width,platform_height){
 		brick_separation = gap;
 		initial_x = start_x;
 		initial_y = start_y;
@@ -400,7 +386,6 @@ class Manager{
 		checkCollisionBallBrick();
 		remove_bricks();
 		ball.updatePosition();
-		
 		
 	};
 
@@ -493,11 +478,30 @@ class Manager{
 			(*wall).draw();
 		}
 		ball.draw();
-		
+		platform.draw();
 	}
 };
 
 Manager sceneManager(brick_gap,brick_x_start,brick_y_start);
+
+void keyPressed (unsigned char key, int x, int y) {  
+	switch (key)
+	{
+		case 'a': 
+		case 'A':
+			if (sceneManager.platform.x_position-platform_width/2 > -16.0){  sceneManager.platform.movePlatformXPosition(-platform_x_position_delta);}
+			break; 
+		case 'd':
+		case 'D':
+			if(sceneManager.platform.x_position-1+platform_width/2 < 16.0f) sceneManager.platform.movePlatformXPosition(platform_x_position_delta);
+			break;
+		default:
+			break;
+	};
+	
+}  
+
+
 
 void render(){
 	float w = glutGet(GLUT_WINDOW_WIDTH);
@@ -512,7 +516,7 @@ void render(){
 	gluLookAt(0.0, 0.0,5.0,
 			  0.0, 0.0, 0.0,
               0.0,1.0, 0.0);
-	//renderGrid();
+	renderGrid();
 	drawPoint(0,0,50,1,1,1);
 	sceneManager.renderScene();
 	//printf("%f \n",fps);
@@ -555,7 +559,7 @@ int main (int argc, char** argv) {
 	glutReshapeFunc(changeViewport);
 	glutIdleFunc(idle);
 	glutDisplayFunc(render);
-	glutIdleFunc(render);
+	glutIdleFunc(idle);
 	glutKeyboardFunc(keyPressed);
 	GLenum err = glewInit();
 	if (GLEW_OK != err) {
