@@ -123,42 +123,13 @@ void drawFilledCircle(GLfloat x, GLfloat y, GLfloat radius){
 void keyPressed (unsigned char key, int x, int y) {  
 	switch (key)
 	{
-		case '1':
-			break;
-		case '2':
-			break;
-		case '3':
-			break;
-		case '4':
-
-			break;
-		case '5':
-
-			break;
-		case '6':
-
-			break;
 		case 'a': 
-			if(platform_x_position > -16.0f){platform_x_position -= 1.5f;}
-			break; 
-		case 'z': 
-		case 's':
-		case 'x':
-		case 'd':
-			if(platform_x_position < 16.0f){platform_x_position += 1.5f;}
-			break;
-		case 'c':
 		case 'A':
 			if(platform_x_position > -16.0f){platform_x_position -= 1.5f;}
 			break; 
-		case 'Z':
-		case 'S':
-		case 'X':
+		case 'd':
 		case 'D':
 			if(platform_x_position < 16.0f){platform_x_position += 1.5f;}
-			break;
-		case 'C':
-
 			break;
 		default:
 			break;
