@@ -24,6 +24,7 @@ using namespace std;
 #define brick_y_start 10
 #define PI 3.14159265
 #define platform_x_position_delta 1.0f
+#define ball_speed 0.005
 
 
 int frameCount = 0;
@@ -337,7 +338,7 @@ class Manager{
 		float initial_x;
 		float initial_y;
 
-		Manager(float gap,float start_x, float start_y):ball(-12,12,0.5,0.01),platform(platform_x_position,platform_y_position,platform_width,platform_height){
+		Manager(float gap,float start_x, float start_y):ball(-12,12,0.5,ball_speed),platform(platform_x_position,platform_y_position,platform_width,platform_height){
 		brick_separation = gap;
 		initial_x = start_x;
 		initial_y = start_y;
@@ -378,12 +379,14 @@ class Manager{
 		level_wall.push_back(Wall (17,-13,1,27)); // R wall
 		level_wall.push_back(Wall(-17,-13,1,27)); // L wall
 		level_wall.push_back(Wall(-17,13,35,1));  // T wall
+		level_wall.push_back(Wall(-17,-15,35,1));  // T wall
 		
 	};
 
 	void update(){
 		checkCollisionBallWall();
 		checkCollisionBallBrick();
+		checkCollisionBallPlatform();
 		remove_bricks();
 		ball.updatePosition();
 		
@@ -463,6 +466,39 @@ class Manager{
 		if(collision) level_bricks[index_of_collision].hits--;
 	};
 
+	void checkCollisionBallPlatform(){
+		double x_point;
+		double y_point;
+		float platform_center_x = platform.x_position;
+		float platform_center_y = platform.y_position;
+		for (int i = 0; i<4;i++){
+			y_point = (float)( ball.y_position + ball.radius * sin( i*90*PI/180 ) );
+			x_point = (float)( ball.x_position + ball.radius * cos( i*90*PI/180 ) );
+			/*printf("I: %d \n",i);
+			printf("X: %f \n",x_point);
+			printf("Y: %f \n",y_point);
+			printf("Y WALL: %f \n",(brick_center_y - (.5*(*wall).height)));
+			printf("X WALL: %f \n",(brick_center_x - (.5*(*wall).width)));*/
+			if ((x_point <= (platform_center_x + (platform.width/2)) && x_point >= (platform_center_x - (platform.width/2))) &&
+				(y_point <= (platform_center_y + (platform.height/2)) && y_point >= (platform_center_y - (platform.height/2)))){
+				if (i == 0 || i == 2) { 
+					ball.x_magnitude *=-1;
+				}
+				else{
+					ball.y_magnitude *=-1;};
+			};
+
+			
+			if (pointInsideCircle(ball.x_position,ball.y_position,ball.radius,platform.x_position-platform.width/2,platform.y_position+platform.height/2) ||
+				pointInsideCircle(ball.x_position,ball.y_position,ball.radius,platform.x_position+platform.width/2, platform.y_position-platform.height/2) ||
+				pointInsideCircle(ball.x_position,ball.y_position,ball.radius,platform.x_position-platform.width/2, platform.y_position-platform.height/2) ||
+				pointInsideCircle(ball.x_position,ball.y_position,ball.radius,platform.x_position+platform.width/2, platform.y_position+platform.height/2)){
+				ball.y_magnitude *=-1;
+				ball.x_magnitude *=-1;
+			}
+		};
+	};
+
 	void remove_bricks(){
 		for (int i=0; i < level_bricks.size(); i++){
 			if (level_bricks[i].hits == 0) level_bricks.erase(level_bricks.begin()+i);
@@ -495,6 +531,8 @@ void keyPressed (unsigned char key, int x, int y) {
 		case 'D':
 			if(sceneManager.platform.x_position-1+platform_width/2 < 16.0f) sceneManager.platform.movePlatformXPosition(platform_x_position_delta);
 			break;
+		case 's':
+			sceneManager.ball.y_magnitude +=0.2;
 		default:
 			break;
 	};
