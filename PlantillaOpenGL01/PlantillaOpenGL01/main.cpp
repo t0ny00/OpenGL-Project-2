@@ -24,7 +24,10 @@ using namespace std;
 #define brick_y_start 10
 #define PI 3.14159265
 #define platform_x_position_delta 1.0f
-#define ball_speed 0.005
+#define ball_speed 0.007
+#define powerUp_width 1.5
+#define powerUp_heigth 1.2
+#define powerUp_speed 0.003
 
 
 int frameCount = 0;
@@ -295,6 +298,7 @@ class Ball{
 		};
 
 		void draw(){
+			glColor3f(0,1,0);
 			drawFilledCircle(x_position,y_position,radius);
 		};
 
@@ -328,12 +332,81 @@ class Wall{
 	};
 };
 
+class PowerUp {
+	public:
+		int type;
+		float x;
+		float y;
+		float speed;
+		float width;
+		float height;
+		float color[3];
+		bool used;
+
+
+	PowerUp(int v_type, float v_x, float v_y,float w, float h){
+		type = v_type;
+		x = v_x;
+		y = v_y;
+		width = w;
+		height = h;
+		speed = powerUp_speed;
+		color[0] = 1;
+		color[1] = 0.5;
+		color[2] = 0;
+		used = false;
+
+	};
+
+	void draw(){
+		if (type == 1){
+			
+			glPushMatrix();
+				glColor3f(color[0],color[1],color[2]);
+				drawLine(x,y+height/2,x+width/2,y);
+				drawLine(x,y-height/2,x+width/2,y);
+				drawLine(x,y-height/2,x,y+height/2);
+				drawLine(x-width/2,y+height/2,x,y);
+				drawLine(x-width/2,y-height/2,x,y);
+				drawLine(x-width/2,y-height/2,x-width/2,y+height/2);
+			glPopMatrix();
+		}
+		else{
+			glPushMatrix();
+				glColor3f(color[0],color[1],color[2]);
+				drawLine(x+0.2,y,x+width/2,y+height/3);
+				drawLine(x+width/2,y+height/3,x+width/2,y-height/3);
+				drawLine(x+0.2,y,x+width/2,y-height/3);
+				drawLine(x+width/2,y+height/7,x+width/1.5,y+height/7);
+				drawLine(x+width/2,y-height/7,x+width/1.5,y-height/7);
+				drawLine(x+width/1.5,y+height/7,x+width/1.5,y-height/7);
+				drawLine(x+0.2,y+width/3,x+0.2,y-width/3);
+
+				drawLine(x-0.2,y,x-width/2,y+height/3);
+				drawLine(x-width/2,y+height/3,x-width/2,y-height/3);
+				drawLine(x-0.2,y,x-width/2,y-height/3);
+				drawLine(x-width/2,y+height/7,x-width/1.5,y+height/7);
+				drawLine(x-width/2,y-height/7,x-width/1.5,y-height/7);
+				drawLine(x-width/1.5,y+height/7,x-width/1.5,y-height/7);
+				drawLine(x-0.2,y+width/3,x-0.2,y-width/3);
+				drawLine(x-0.2,y,x+0.2,y);
+			glPopMatrix();
+		}
+		
+	};
+
+	void update(){
+		y -= speed;
+	}
+};
+
 class Manager{
 	public:
 		std::vector<Brick>  level_bricks;
 		std::vector<Wall>  level_wall;
 		Ball ball;
 		Platform platform;
+		std::vector<PowerUp>  level_power_ups;
 		float brick_separation;
 		float initial_x;
 		float initial_y;
@@ -387,9 +460,13 @@ class Manager{
 		checkCollisionBallWall();
 		checkCollisionBallBrick();
 		checkCollisionBallPlatform();
+		checkCollisionPowerUpPlatform();
 		remove_bricks();
+		remove_power_ups();
 		ball.updatePosition();
-		
+		for (std::vector<PowerUp>::iterator p_up = level_power_ups.begin() ; p_up != level_power_ups.end(); ++p_up){
+			(*p_up).update();
+		}
 	};
 
 	void checkCollisionBallWall(){
@@ -499,9 +576,52 @@ class Manager{
 		};
 	};
 
+	void checkCollisionPowerUpPlatform(){
+		float platform_center_x = platform.x_position;
+		float platform_center_y = platform.y_position;
+		for (int i=0; i < level_power_ups.size(); i++){
+			/*printf("I: %d \n",i);
+			printf("X: %f \n",x_point);
+			printf("Y: %f \n",y_point);
+			printf("Y WALL: %f \n",(brick_center_y - (.5*(*wall).height)));
+			printf("X WALL: %f \n",(brick_center_x - (.5*(*wall).width)));*/
+			if ((level_power_ups[i].x <= (platform_center_x + (platform.width/2)) && level_power_ups[i].x >= (platform_center_x - (platform.width/2))) &&
+				(level_power_ups[i].y <= (platform_center_y + (platform.height/2)) && level_power_ups[i].x >= (platform_center_y - (platform.height/2)))){
+				if (level_power_ups[i].type == 1) { 
+					ball.speed = ball.speed *1.4;
+				}
+				else{
+					platform.width = platform.width * 0.85;
+				};
+				level_power_ups[i].used = true;
+			};
+
+		};
+	};
+
 	void remove_bricks(){
+		double brick_center_x;
+		double brick_center_y;
 		for (int i=0; i < level_bricks.size(); i++){
-			if (level_bricks[i].hits == 0) level_bricks.erase(level_bricks.begin()+i);
+			if (level_bricks[i].hits == 0){ 
+				if(level_bricks[i].bonus == 1 || level_bricks[i].bonus == 2 ){
+					brick_center_x = level_bricks[i].x_position + level_bricks[i].width/2;
+					brick_center_y = level_bricks[i].y_position + level_bricks[i].height/2;
+					level_power_ups.push_back(PowerUp(level_bricks[i].bonus,brick_center_x,brick_center_y,powerUp_width,powerUp_heigth));
+				};
+				level_bricks.erase(level_bricks.begin()+i);
+		
+			}
+		}
+	};
+
+	void remove_power_ups(){
+		for (int i=0; i < level_power_ups.size(); i++){
+			if (level_power_ups[i].used || level_power_ups[i].y < -16.0){ 
+			
+				level_power_ups.erase(level_power_ups.begin()+i);
+		
+			}
 		}
 	};
 
@@ -513,12 +633,16 @@ class Manager{
 		for (std::vector<Wall>::iterator wall = level_wall.begin() ; wall != level_wall.end(); ++wall){
 			(*wall).draw();
 		}
+		for (std::vector<PowerUp>::iterator p_up = level_power_ups.begin() ; p_up != level_power_ups.end(); ++p_up){
+			(*p_up).draw();
+		}
 		ball.draw();
 		platform.draw();
 	}
 };
 
 Manager sceneManager(brick_gap,brick_x_start,brick_y_start);
+
 
 void keyPressed (unsigned char key, int x, int y) {  
 	switch (key)
