@@ -1,4 +1,4 @@
-﻿Build started 5/14/2016 12:14:48 PM.
+﻿Build started 5/14/2016 4:28:47 PM.
      1>Project "C:\dev\Project 2\OpenGL-Project-2\PlantillaOpenGL01\PlantillaOpenGL01\PlantillaOpenGL01.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /IC:\dev\opengl\freeglut\include /I"C:\dev\opengl\glew-1.7.0\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
@@ -33,47 +33,62 @@
      1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(200): warning C4305: '-=' : truncation from 'double' to 'float'
      1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(211): warning C4244: 'argument' : conversion from 'double' to 'int', possible loss of data
      1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(211): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(294): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(295): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(296): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(297): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
      1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(298): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(299): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
      1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(300): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
      1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(301): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
      1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(302): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(303): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(304): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
      1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(305): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(367): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(462): warning C4305: '=' : truncation from 'double' to 'float'
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(486): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(488): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(489): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(490): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(306): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(307): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(309): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(312): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(314): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(316): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(317): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(319): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(320): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(323): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(325): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(326): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(328): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(329): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(330): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(332): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(333): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(334): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(372): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(467): warning C4305: '=' : truncation from 'double' to 'float'
      1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(491): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(492): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(493): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
      1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(494): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(495): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
      1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(496): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
      1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(497): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(498): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
      1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(499): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(500): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
      1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(501): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(524): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(537): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(592): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(502): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(503): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(504): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(505): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(506): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(529): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(542): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(597): warning C4018: '<' : signed/unsigned mismatch
      1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(625): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(697): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(706): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(709): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(720): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(729): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(729): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(738): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(754): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(784): warning C4305: '+=' : truncation from 'double' to 'float'
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(793): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(794): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
-     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(820): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(747): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(751): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(754): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(765): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(774): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(774): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(783): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(799): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(829): warning C4305: '+=' : truncation from 'double' to 'float'
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(838): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(839): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
+     1>c:\dev\project 2\opengl-project-2\plantillaopengl01\plantillaopengl01\main.cpp(865): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\dev\Project 2\OpenGL-Project-2\PlantillaOpenGL01\Debug\PlantillaOpenGL01.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86" /LIBPATH:C:\dev\opengl\freeglut\lib /LIBPATH:"C:\dev\opengl\glew-1.7.0\lib" glew32.lib freeglut.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\dev\Project 2\OpenGL-Project-2\PlantillaOpenGL01\Debug\PlantillaOpenGL01.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\dev\Project 2\OpenGL-Project-2\PlantillaOpenGL01\Debug\PlantillaOpenGL01.lib" /MACHINE:X86 Debug\main.obj
          PlantillaOpenGL01.vcxproj -> C:\dev\Project 2\OpenGL-Project-2\PlantillaOpenGL01\Debug\PlantillaOpenGL01.exe
@@ -81,4 +96,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.90
+Time Elapsed 00:00:01.83

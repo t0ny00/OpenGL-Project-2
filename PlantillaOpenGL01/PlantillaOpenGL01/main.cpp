@@ -256,18 +256,20 @@ class Brick{
 		float width;
 		float height;
 		int bonus;
+		int broken_form;
 		bool special;
 		int hits;
 		float color [3];
 		float broken_color [3];
 	
-	Brick(int id_num,float x,float y,float w, float h, int bonus_type,bool is_special){
+		Brick(int id_num,float x,float y,float w, float h, int bonus_type,bool is_special,int broken_f){
 		id = id_num;
 		x_position = x;
 		y_position = y;
 		width = w;
 		height = h;
 		bonus = bonus_type;
+		broken_form = broken_f;
 		special = is_special;
 		if (special){
 			hits = 2;
@@ -290,48 +292,51 @@ class Brick{
 		if (special && hits == 1) {
 			glPushMatrix();
 				glColor3f(broken_color[0],broken_color[1],broken_color[2]);
-				drawLine(x_position,y_position,x_position,y_position+height);
-				drawLine(x_position,y_position+height,x_position+1.3,y_position+height);
-				drawLine(x_position+1.3,y_position+height,x_position+1.0,y_position+0.7);
-				drawLine(x_position+1.0,y_position+0.7,x_position+1.6,y_position+0.3);
-				drawLine(x_position+1.6,y_position+0.3,x_position+1.4,y_position);
-				drawLine(x_position+1.4,y_position,x_position,y_position);
+				if (broken_form == 1){
+					
+					drawLine(x_position,y_position,x_position,y_position+height);
+					drawLine(x_position,y_position+height,x_position+1.3,y_position+height);
+					drawLine(x_position+1.3,y_position+height,x_position+1.0,y_position+0.7);
+					drawLine(x_position+1.0,y_position+0.7,x_position+1.6,y_position+0.3);
+					drawLine(x_position+1.6,y_position+0.3,x_position+1.4,y_position);
+					drawLine(x_position+1.4,y_position,x_position,y_position);
 
-				drawLine(x_position+2.0,y_position+height,x_position+1.4,y_position+0.65);
-				drawLine(x_position+1.4,y_position+0.65,x_position+1.9,y_position+0.2);
-				drawLine(x_position+1.9,y_position+0.2,x_position+1.6,y_position);
-				drawLine(x_position+1.6,y_position,x_position+width,y_position);
-				drawLine(x_position+width,y_position,x_position+width,y_position+height);
-				drawLine(x_position+width,y_position+height,x_position+2.0,y_position+height);
+					drawLine(x_position+2.0,y_position+height,x_position+1.4,y_position+0.65);
+					drawLine(x_position+1.4,y_position+0.65,x_position+1.9,y_position+0.2);
+					drawLine(x_position+1.9,y_position+0.2,x_position+1.6,y_position);
+					drawLine(x_position+1.6,y_position,x_position+width,y_position);
+					drawLine(x_position+width,y_position,x_position+width,y_position+height);
+					drawLine(x_position+width,y_position+height,x_position+2.0,y_position+height);
+				}
+				else {
+					drawLine(x_position,y_position,x_position,y_position+height/2.7);
+					drawLine(x_position,y_position+height/2,x_position,y_position+height);
+					drawLine(x_position+width,y_position+height/1.2,x_position+width,y_position);
+
+					drawLine(x_position+width/2.2,y_position,x_position,y_position);
+					drawLine(x_position+width/2.2+0.2,y_position,x_position+width,y_position);
+
+					drawLine(x_position+width/2.2,y_position+height,x_position,y_position+height);
+					drawLine(x_position+width/2.2+0.2,y_position+height,x_position+width/1.2,y_position+height);
+			
+
+					drawLine(x_position+width/1.2,y_position+height,x_position+width,y_position+height/1.2);
+			
+					drawLine(x_position,y_position+height/2,x_position+width/6,y_position+height/1.85);
+					drawLine(x_position+width/6,y_position+height/1.85,x_position,y_position+height/2.9);
+
+					drawLine(x_position+width/2.1,y_position+height,x_position+width/2.25,y_position+height/1.85);
+					drawLine(x_position+width/2.25,y_position+height/1.85,x_position+width/2.1,y_position+height/2);
+					drawLine(x_position+width/2.1,y_position+height/2,x_position+width/2.2,y_position);
+
+					drawLine(x_position+width/2.1+0.2,y_position+height,x_position+width/2.25+0.2,y_position+height/1.85);
+					drawLine(x_position+width/2.25+0.2,y_position+height/1.85,x_position+width/2.1+0.2,y_position+height/2);
+					drawLine(x_position+width/2.1+0.2,y_position+height/2,x_position+width/2.2+0.2,y_position);
+				}
 			glPopMatrix();
 		}
 		else {
 			glPushMatrix();
-
-				/*drawLine(x_position,y_position,x_position,y_position+height/2.7);
-				drawLine(x_position,y_position+height/2,x_position,y_position+height);
-				drawLine(x_position+width,y_position+height/1.2,x_position+width,y_position);
-
-				drawLine(x_position+width/2.2,y_position,x_position,y_position);
-				drawLine(x_position+width/2.2+0.2,y_position,x_position+width,y_position);
-
-				drawLine(x_position+width/2.2,y_position+height,x_position,y_position+height);
-				drawLine(x_position+width/2.2+0.2,y_position+height,x_position+width/1.2,y_position+height);
-			
-
-				drawLine(x_position+width/1.2,y_position+height,x_position+width,y_position+height/1.2);
-			
-				drawLine(x_position,y_position+height/2,x_position+width/6,y_position+height/1.85);
-				drawLine(x_position+width/6,y_position+height/1.85,x_position,y_position+height/2.9);
-
-				drawLine(x_position+width/2.1,y_position+height,x_position+width/2.25,y_position+height/1.85);
-				drawLine(x_position+width/2.25,y_position+height/1.85,x_position+width/2.1,y_position+height/2);
-				drawLine(x_position+width/2.1,y_position+height/2,x_position+width/2.2,y_position);
-
-				drawLine(x_position+width/2.1+0.2,y_position+height,x_position+width/2.25+0.2,y_position+height/1.85);
-				drawLine(x_position+width/2.25+0.2,y_position+height/1.85,x_position+width/2.1+0.2,y_position+height/2);
-				drawLine(x_position+width/2.1+0.2,y_position+height/2,x_position+width/2.2+0.2,y_position);*/
-			
 
 				glColor3f(color[0],color[1],color[2]);
 				drawLine(x_position,y_position,x_position,y_position+height);
@@ -554,7 +559,7 @@ class Manager{
 			if (has_bonus) random_bonus = (rand() % 2) + 1;
 			else random_bonus = 0;
 
-			Brick brick(i,acc_x,acc_y,brick_width,brick_height,random_bonus,random_special);
+			Brick brick(i,acc_x,acc_y,brick_width,brick_height,random_bonus,random_special,(rand() % 2));
 			level_bricks.push_back(brick);
 			acc_x += brick_width + brick_separation;
 		}
@@ -595,11 +600,6 @@ class Manager{
 			for (int i = 0; i<4;i++){
 				y_point = (float)( ball.y_position + ball.radius * sin( i*90*PI/180 ) );
 				x_point = (float)( ball.x_position + ball.radius * cos( i*90*PI/180 ) );
-				/*printf("I: %d \n",i);
-				printf("X: %f \n",x_point);
-				printf("Y: %f \n",y_point);
-				printf("Y WALL: %f \n",(wall_center_y - (.5*(*wall).height)));
-				printf("X WALL: %f \n",(wall_center_x - (.5*(*wall).width)));*/
 				if ((x_point <= (wall_center_x + (.5*level_wall[j].width)) && x_point >= (wall_center_x - (.5*level_wall[j].width))) &&
 					(y_point <= (wall_center_y + (.5*level_wall[j].height)) && y_point >= (wall_center_y - (.5*level_wall[j].height)))){
 					if (i == 0 || i == 2) { 
@@ -628,11 +628,6 @@ class Manager{
 			for (int i = 0; i<4;i++){
 				y_point = (float)( ball.y_position + ball.radius * sin( i*90*PI/180 ) );
 				x_point = (float)( ball.x_position + ball.radius * cos( i*90*PI/180 ) );
-				/*printf("I: %d \n",i);
-				printf("X: %f \n",x_point);
-				printf("Y: %f \n",y_point);
-				printf("Y WALL: %f \n",(brick_center_y - (.5*(*wall).height)));
-				printf("X WALL: %f \n",(brick_center_x - (.5*(*wall).width)));*/
 				if ((x_point <= (brick_center_x + (.5*level_bricks[j].width)) && x_point >= (brick_center_x - (.5*level_bricks[j].width))) &&
 					(y_point <= (brick_center_y + (.5*level_bricks[j].height)) && y_point >= (brick_center_y - (.5*level_bricks[j].height)))){
 					if (i == 0 || i == 2) { 
@@ -642,18 +637,65 @@ class Manager{
 						ball.y_magnitude *=-1;};
 					index_of_collision = j;
 					collision = true;
-				};
+					break;
+				}
+				if (pointInsideCircle(ball.x_position,ball.y_position,ball.radius,level_bricks[j].x_position + level_bricks[j].width ,level_bricks[j].y_position)){
+					if(ball.y_magnitude == -1) ball.x_magnitude *=-1;
+					else {
+						if(ball.x_magnitude == 1) ball.y_magnitude *=-1;
+						else{	
+							ball.y_magnitude *=-1;
+							ball.x_magnitude *=-1;
+						}
+					}
+					index_of_collision = j;
+					collision = true;
+					break;
+				}
+				else if (pointInsideCircle(ball.x_position,ball.y_position,ball.radius,level_bricks[j].x_position,level_bricks[j].y_position)){
+					if(ball.y_magnitude == -1){ 
+						ball.x_magnitude *=-1;}
+					else {
+						if(ball.x_magnitude == -1) ball.y_magnitude *=-1;
+						else{	
+							ball.y_magnitude *=-1;
+							ball.x_magnitude *=-1;
+						}
+					}
+					index_of_collision = j;
+					collision = true;
+					break;
+				}
+				else if	(pointInsideCircle(ball.x_position,ball.y_position,ball.radius,level_bricks[j].x_position + level_bricks[j].width,level_bricks[j].y_position + level_bricks[j].height)){
+					if(ball.y_magnitude == 1) ball.x_magnitude *=-1;
+					else {
+						if(ball.x_magnitude == 1) ball.y_magnitude *=-1;
+						else{	
+							ball.y_magnitude *=-1;
+							ball.x_magnitude *=-1;
+						}
+					}
+					index_of_collision = j;
+					collision = true;
+					break;
+				}
+				else if	(pointInsideCircle(ball.x_position,ball.y_position,ball.radius,level_bricks[j].x_position ,level_bricks[j].y_position + level_bricks[j].height)){
+					if(ball.y_magnitude == 1) ball.x_magnitude *=-1;
+					else {
+						if(ball.x_magnitude == -1) ball.y_magnitude *=-1;
+						else{	
+							ball.y_magnitude *=-1;
+							ball.x_magnitude *=-1;
+						}
+					}
+					index_of_collision = j;
+					collision = true;
+					break;
+				}
 			};
 			
-			if (pointInsideCircle(ball.x_position,ball.y_position,ball.radius,level_bricks[j].x_position,level_bricks[j].y_position) ||
-				pointInsideCircle(ball.x_position,ball.y_position,ball.radius,level_bricks[j].x_position + level_bricks[j].width ,level_bricks[j].y_position) ||
-				pointInsideCircle(ball.x_position,ball.y_position,ball.radius,level_bricks[j].x_position + level_bricks[j].width,level_bricks[j].y_position + level_bricks[j].height) ||
-				pointInsideCircle(ball.x_position,ball.y_position,ball.radius,level_bricks[j].x_position ,level_bricks[j].y_position + level_bricks[j].height)){
-				ball.y_magnitude *=-1;
-				ball.x_magnitude *=-1;
-				index_of_collision = j;
-				collision = true;
-			}
+			
+			
 		};
 		if(collision) level_bricks[index_of_collision].hits--;
 	};
@@ -666,11 +708,6 @@ class Manager{
 		for (int i = 0; i<4;i++){
 			y_point = (float)( ball.y_position + ball.radius * sin( i*90*PI/180 ) );
 			x_point = (float)( ball.x_position + ball.radius * cos( i*90*PI/180 ) );
-			/*printf("I: %d \n",i);
-			printf("X: %f \n",x_point);
-			printf("Y: %f \n",y_point);
-			printf("Y WALL: %f \n",(brick_center_y - (.5*(*wall).height)));
-			printf("X WALL: %f \n",(brick_center_x - (.5*(*wall).width)));*/
 			if ((x_point <= (platform_center_x + (platform.width/2)) && x_point >= (platform_center_x - (platform.width/2))) &&
 				(y_point <= (platform_center_y + (platform.height/2)) && y_point >= (platform_center_y - (platform.height/2)))){
 				if (i == 0 || i == 2) { 
@@ -678,15 +715,28 @@ class Manager{
 				}
 				else{
 					ball.y_magnitude *=-1;};
-			};
-
-			
-			if (pointInsideCircle(ball.x_position,ball.y_position,ball.radius,platform.x_position-platform.width/2,platform.y_position+platform.height/2) ||
-				pointInsideCircle(ball.x_position,ball.y_position,ball.radius,platform.x_position+platform.width/2, platform.y_position-platform.height/2) ||
-				pointInsideCircle(ball.x_position,ball.y_position,ball.radius,platform.x_position-platform.width/2, platform.y_position-platform.height/2) ||
-				pointInsideCircle(ball.x_position,ball.y_position,ball.radius,platform.x_position+platform.width/2, platform.y_position+platform.height/2)){
-				ball.y_magnitude *=-1;
-				ball.x_magnitude *=-1;
+			}
+			else if	(pointInsideCircle(ball.x_position,ball.y_position,ball.radius,platform.x_position + platform.width/2,platform.y_position +platform.height/2)){
+				if(ball.y_magnitude == 1) ball.x_magnitude *=-1;
+				else {
+					if(ball.x_magnitude == 1) ball.y_magnitude *=-1;
+					else{	
+						ball.y_magnitude *=-1;
+						ball.x_magnitude *=-1;
+					}
+				}
+				break;
+			}
+			else if	(pointInsideCircle(ball.x_position,ball.y_position,ball.radius,platform.x_position-platform.width/2,platform.y_position + platform.height/2)){
+				if(ball.y_magnitude == 1) ball.x_magnitude *=-1;
+				else {
+					if(ball.x_magnitude == -1) ball.y_magnitude *=-1;
+					else{	
+						ball.y_magnitude *=-1;
+						ball.x_magnitude *=-1;
+					}
+				}
+				break;
 			}
 		};
 	};
@@ -695,11 +745,6 @@ class Manager{
 		float platform_center_x = platform.x_position;
 		float platform_center_y = platform.y_position;
 		for (int i=0; i < level_power_ups.size(); i++){
-			/*printf("I: %d \n",i);
-			printf("X: %f \n",x_point);
-			printf("Y: %f \n",y_point);
-			printf("Y WALL: %f \n",(brick_center_y - (.5*(*wall).height)));
-			printf("X WALL: %f \n",(brick_center_x - (.5*(*wall).width)));*/
 			if ((level_power_ups[i].x <= (platform_center_x + (platform.width/2)) && level_power_ups[i].x >= (platform_center_x - (platform.width/2))) &&
 				(level_power_ups[i].y <= (platform_center_y + (platform.height/2)) && level_power_ups[i].x >= (platform_center_y - (platform.height/2)))){
 				if (level_power_ups[i].type == 1) { 
@@ -803,7 +848,7 @@ void render(){
 			  0.0, 0.0, 0.0,
               0.0,1.0, 0.0);
 	//renderGrid();
-	drawPoint(0,0,50,1,1,1);
+	//drawPoint(0,0,50,1,1,1);
 	sceneManager.renderScene();
 	//printf("%f \n",fps);
 	glutSwapBuffers();
