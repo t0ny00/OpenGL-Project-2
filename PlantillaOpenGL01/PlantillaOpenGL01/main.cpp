@@ -233,11 +233,39 @@ class Brick{
 
 	void draw(){
 		glPushMatrix();
-			glColor3f(color[0],color[1],color[2]);
-			drawLine(x_position,y_position,x_position,y_position+height);
-			drawLine(x_position,y_position+height,x_position+width,y_position+height);
-			drawLine(x_position+width,y_position+height,x_position+width,y_position);
-			drawLine(x_position+width,y_position,x_position,y_position);
+			if(special && hits == 1){
+				glColor3f(color[0],color[1],color[2]);
+				drawLine(x_position,y_position,x_position,y_position+height/2.7);
+				drawLine(x_position,y_position+height/2,x_position,y_position+height);
+				drawLine(x_position+width,y_position+height/1.2,x_position+width,y_position);
+
+				drawLine(x_position+width/2.2,y_position,x_position,y_position);
+				drawLine(x_position+width/2.2+0.2,y_position,x_position+width,y_position);
+
+				drawLine(x_position+width/2.2,y_position+height,x_position,y_position+height);
+				drawLine(x_position+width/2.2+0.2,y_position+height,x_position+width/1.2,y_position+height);
+			
+
+				drawLine(x_position+width/1.2,y_position+height,x_position+width,y_position+height/1.2);
+			
+				drawLine(x_position,y_position+height/2,x_position+width/6,y_position+height/1.85);
+				drawLine(x_position+width/6,y_position+height/1.85,x_position,y_position+height/2.9);
+
+				drawLine(x_position+width/2.1,y_position+height,x_position+width/2.25,y_position+height/1.85);
+				drawLine(x_position+width/2.25,y_position+height/1.85,x_position+width/2.1,y_position+height/2);
+				drawLine(x_position+width/2.1,y_position+height/2,x_position+width/2.2,y_position);
+
+				drawLine(x_position+width/2.1+0.2,y_position+height,x_position+width/2.25+0.2,y_position+height/1.85);
+				drawLine(x_position+width/2.25+0.2,y_position+height/1.85,x_position+width/2.1+0.2,y_position+height/2);
+				drawLine(x_position+width/2.1+0.2,y_position+height/2,x_position+width/2.2+0.2,y_position);
+			}
+			else {	
+				glColor3f(color[0],color[1],color[2]);
+				drawLine(x_position,y_position,x_position,y_position+height);
+				drawLine(x_position,y_position+height,x_position+width,y_position+height);
+				drawLine(x_position+width,y_position+height,x_position+width,y_position);
+				drawLine(x_position+width,y_position,x_position,y_position);
+			}
 		glPopMatrix();
 	};
 
@@ -687,7 +715,7 @@ void render(){
 	gluLookAt(0.0, 0.0,5.0,
 			  0.0, 0.0, 0.0,
               0.0,1.0, 0.0);
-	renderGrid();
+	//renderGrid();
 	drawPoint(0,0,50,1,1,1);
 	sceneManager.renderScene();
 	//printf("%f \n",fps);
