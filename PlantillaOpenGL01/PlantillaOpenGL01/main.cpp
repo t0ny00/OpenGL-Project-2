@@ -34,6 +34,7 @@ float timeDelta = 0;
 float fps = 0;
 
 
+
 void ejesCoordenada(float w) {
 	
 	glLineWidth(w);
@@ -89,7 +90,7 @@ void drawLine(float x1, float y1, float x2, float y2){
 	glEnd();
 }
 
-void drawCircle(int x, int y, int radius, int size, float r,float g, float b){
+void drawCircle(int x, int y, float radius, int size, float r,float g, float b){
 	int i;
 	int lineAmount = 500;
 	GLfloat twicePi = 2.0f * 3.141592;
@@ -159,6 +160,57 @@ void renderGrid(){
     glPopMatrix();
 }
 
+class Explosion {
+	public:
+		float x_position;
+		float y_position;
+		float explosion_points [10][4];
+		bool exists;
+
+	Explosion(float x, float y){
+		float current_angle = 0;
+		x_position = x;
+		y_position = y;
+		exists = true;
+		for(int i = 0; i < 10 ; i++){
+			float exp_angle_rand[3];
+			exp_angle_rand[0] = 0.3;
+			exp_angle_rand[1] = 0.4;
+			exp_angle_rand[2] = 0.5;
+			current_angle += exp_angle_rand[rand() % 3];
+			explosion_points[i][0] = x;
+			explosion_points[i][1] = y;
+			explosion_points[i][2] = rand() % 2 + 3;
+			explosion_points[i][3] = current_angle;
+		};
+	}
+
+	void updatepoints () {
+		bool point_exists = false;
+		for(int i = 0; i < 10 ; i++){
+			if(explosion_points[i][2] > 0){
+				point_exists = true;
+				explosion_points[i][0] = (float)( explosion_points[i][0] + 0.05 * cos( explosion_points[i][3]*90*PI/180 ) );
+				explosion_points[i][1] = (float)( explosion_points[i][1] + 0.05 * sin( explosion_points[i][3]*90*PI/180 ) );
+				explosion_points[i][2] -= 0.02;
+			}
+		}
+		if (!point_exists) exists = false;
+	};
+
+	void drawexplosion () {	
+			for (int i = 0 ; i < 10 ; i++){
+				if(explosion_points[i][2] > 0){
+					glPushMatrix();
+						glColor3f(1,0.5,0);
+						drawCircle(explosion_points[i][0],explosion_points[i][1],0.25,0.25,0,1,0);
+					glPopMatrix();
+				}
+			};
+
+	};
+};
+
 class Platform {
 	public:
 		float x_position;
@@ -185,7 +237,6 @@ class Platform {
 	};
 
 	void movePlatformXPosition(float x){
-		//direction is 1 or -1
 		x_position += x;
 	};
 };
@@ -203,6 +254,7 @@ class Brick{
 		bool special;
 		int hits;
 		float color [3];
+		float broken_color [3];
 	
 	Brick(int id_num,float x,float y,float w, float h, int bonus_type,bool is_special){
 		id = id_num;
@@ -217,6 +269,9 @@ class Brick{
 			color[0] = 1;
 			color[1] = 1;
 			color[2] = 1;
+			broken_color[0] = 1;
+			broken_color[1] = 0.5;
+			broken_color[2] = 0;
 		}
 		else{
 			hits = 1;
@@ -227,14 +282,36 @@ class Brick{
 	};
 
 	void draw(){
-		glPushMatrix();
-			glColor3f(color[0],color[1],color[2]);
-			drawLine(x_position,y_position,x_position,y_position+height);
-			drawLine(x_position,y_position+height,x_position+width,y_position+height);
-			drawLine(x_position+width,y_position+height,x_position+width,y_position);
-			drawLine(x_position+width,y_position,x_position,y_position);
-		glPopMatrix();
+		if (special && hits == 1) {
+			glPushMatrix();
+				glColor3f(broken_color[0],broken_color[1],broken_color[2]);
+				drawLine(x_position,y_position,x_position,y_position+height);
+				drawLine(x_position,y_position+height,x_position+1.3,y_position+height);
+				drawLine(x_position+1.3,y_position+height,x_position+1.0,y_position+0.7);
+				drawLine(x_position+1.0,y_position+0.7,x_position+1.6,y_position+0.3);
+				drawLine(x_position+1.6,y_position+0.3,x_position+1.4,y_position);
+				drawLine(x_position+1.4,y_position,x_position,y_position);
+
+				drawLine(x_position+2.0,y_position+height,x_position+1.4,y_position+0.65);
+				drawLine(x_position+1.4,y_position+0.65,x_position+1.9,y_position+0.2);
+				drawLine(x_position+1.9,y_position+0.2,x_position+1.6,y_position);
+				drawLine(x_position+1.6,y_position,x_position+width,y_position);
+				drawLine(x_position+width,y_position,x_position+width,y_position+height);
+				drawLine(x_position+width,y_position+height,x_position+2.0,y_position+height);
+			glPopMatrix();
+		}
+		else {
+			glPushMatrix();
+				glColor3f(color[0],color[1],color[2]);
+				drawLine(x_position,y_position,x_position,y_position+height);
+				drawLine(x_position,y_position+height,x_position+width,y_position+height);
+				drawLine(x_position+width,y_position+height,x_position+width,y_position);
+				drawLine(x_position+width,y_position,x_position,y_position);
+			glPopMatrix();
+		}
 	};
+
+
 
 	void print(){
 		printf("id: %d, x_position: %f, y_position: %f, width: %f, height: %f, bonus: %d \n",id,x_position,y_position,width,height,bonus);
@@ -295,6 +372,7 @@ class Ball{
 		};
 
 		void draw(){
+			glColor3f(0,1,0);
 			drawFilledCircle(x_position,y_position,radius);
 		};
 
@@ -332,6 +410,7 @@ class Manager{
 	public:
 		std::vector<Brick>  level_bricks;
 		std::vector<Wall>  level_wall;
+		std::vector<Explosion>  level_explosions;
 		Ball ball;
 		Platform platform;
 		float brick_separation;
@@ -501,7 +580,13 @@ class Manager{
 
 	void remove_bricks(){
 		for (int i=0; i < level_bricks.size(); i++){
-			if (level_bricks[i].hits == 0) level_bricks.erase(level_bricks.begin()+i);
+			if (level_bricks[i].hits == 0){
+				if (level_bricks[i].special){
+					Explosion exp(level_bricks[i].x_position+brick_width/2,level_bricks[i].y_position+brick_height/2);
+					level_explosions.push_back(exp);
+				}
+				level_bricks.erase(level_bricks.begin()+i);
+			}
 		}
 	};
 
@@ -512,6 +597,11 @@ class Manager{
 		}
 		for (std::vector<Wall>::iterator wall = level_wall.begin() ; wall != level_wall.end(); ++wall){
 			(*wall).draw();
+		}
+		for (int i=0; i<level_explosions.size(); i++){
+			level_explosions[i].drawexplosion();
+			level_explosions[i].updatepoints();
+			if (!level_explosions[i].exists) level_explosions.erase(level_explosions.begin()+i);
 		}
 		ball.draw();
 		platform.draw();
@@ -540,7 +630,6 @@ void keyPressed (unsigned char key, int x, int y) {
 }  
 
 
-
 void render(){
 	float w = glutGet(GLUT_WINDOW_WIDTH);
 	float h = glutGet(GLUT_WINDOW_HEIGHT);
@@ -554,8 +643,8 @@ void render(){
 	gluLookAt(0.0, 0.0,5.0,
 			  0.0, 0.0, 0.0,
               0.0,1.0, 0.0);
-	renderGrid();
-	drawPoint(0,0,50,1,1,1);
+	//renderGrid();
+	//drawPoint(0,0,50,1,1,1);
 	sceneManager.renderScene();
 	//printf("%f \n",fps);
 	glutSwapBuffers();
