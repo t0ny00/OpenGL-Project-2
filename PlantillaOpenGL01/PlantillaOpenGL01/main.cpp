@@ -24,10 +24,12 @@ using namespace std;
 #define brick_y_start 10
 #define PI 3.14159265
 #define platform_x_position_delta 1.0f
-#define ball_speed 0.007
+#define ball_speed 0.085
 #define powerUp_width 1.5
 #define powerUp_heigth 1.2
-#define powerUp_speed 0.003
+#define powerUp_speed 0.065
+#define frame_rate 60
+#define death_line -17
 
 
 int frameCount = 0;
@@ -321,6 +323,7 @@ class Wall{
 		width = w;
 		height = h;
 	}
+
 	void draw(){
 		glPushMatrix();
 			glColor3f(0,1,0);
@@ -452,7 +455,7 @@ class Manager{
 		level_wall.push_back(Wall (17,-13,1,27)); // R wall
 		level_wall.push_back(Wall(-17,-13,1,27)); // L wall
 		level_wall.push_back(Wall(-17,13,35,1));  // T wall
-		level_wall.push_back(Wall(-17,-15,35,1));  // T wall
+		//level_wall.push_back(Wall(-17,-15,35,1));  // T wall
 		
 	};
 
@@ -467,6 +470,11 @@ class Manager{
 		for (std::vector<PowerUp>::iterator p_up = level_power_ups.begin() ; p_up != level_power_ups.end(); ++p_up){
 			(*p_up).update();
 		}
+		if (ball.y_position < death_line) restart();
+	};
+
+	void restart(){
+		*this = Manager(brick_gap,brick_x_start,brick_y_start);
 	};
 
 	void checkCollisionBallWall(){
@@ -499,7 +507,7 @@ class Manager{
 			};
 		};
 	};
-	
+
 	void checkCollisionBallBrick(){
 		double x_point;
 		double y_point;
@@ -644,6 +652,7 @@ class Manager{
 Manager sceneManager(brick_gap,brick_x_start,brick_y_start);
 
 
+
 void keyPressed (unsigned char key, int x, int y) {  
 	switch (key)
 	{
@@ -671,7 +680,7 @@ void render(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	calculateFPS();
+	//calculateFPS();
 	gluPerspective(140.0, w/h, 3.0, 10.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -692,7 +701,7 @@ void init(){
 
 };
 
-void idle(){
+void idle(int n){
 	currentTimeDelta = glutGet(GLUT_ELAPSED_TIME);
 
     //  Calculate time passed
@@ -700,6 +709,7 @@ void idle(){
 	previousTimeDelta = currentTimeDelta;
 	sceneManager.update();
 	glutPostRedisplay();
+	glutTimerFunc(1000/frame_rate,idle,n);
 }
 
 int main (int argc, char** argv) {
@@ -719,9 +729,9 @@ int main (int argc, char** argv) {
 	glEnable(GL_POINT_SMOOTH);
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 	glutReshapeFunc(changeViewport);
-	glutIdleFunc(idle);
+	//glutIdleFunc(idle);
 	glutDisplayFunc(render);
-	glutIdleFunc(idle);
+	glutTimerFunc(1000/frame_rate,idle,0);
 	glutKeyboardFunc(keyPressed);
 	GLenum err = glewInit();
 	if (GLEW_OK != err) {
