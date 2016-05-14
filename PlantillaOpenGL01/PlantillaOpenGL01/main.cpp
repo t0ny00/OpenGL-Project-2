@@ -24,7 +24,12 @@ using namespace std;
 #define brick_y_start 10
 #define PI 3.14159265
 #define platform_x_position_delta 1.0f
-#define ball_speed 0.005
+#define ball_speed 0.085
+#define powerUp_width 1.5
+#define powerUp_heigth 1.2
+#define powerUp_speed 0.065
+#define frame_rate 60
+#define death_line -17
 
 
 int frameCount = 0;
@@ -302,14 +307,43 @@ class Brick{
 		}
 		else {
 			glPushMatrix();
+
+				/*drawLine(x_position,y_position,x_position,y_position+height/2.7);
+				drawLine(x_position,y_position+height/2,x_position,y_position+height);
+				drawLine(x_position+width,y_position+height/1.2,x_position+width,y_position);
+
+				drawLine(x_position+width/2.2,y_position,x_position,y_position);
+				drawLine(x_position+width/2.2+0.2,y_position,x_position+width,y_position);
+
+				drawLine(x_position+width/2.2,y_position+height,x_position,y_position+height);
+				drawLine(x_position+width/2.2+0.2,y_position+height,x_position+width/1.2,y_position+height);
+			
+
+				drawLine(x_position+width/1.2,y_position+height,x_position+width,y_position+height/1.2);
+			
+				drawLine(x_position,y_position+height/2,x_position+width/6,y_position+height/1.85);
+				drawLine(x_position+width/6,y_position+height/1.85,x_position,y_position+height/2.9);
+
+				drawLine(x_position+width/2.1,y_position+height,x_position+width/2.25,y_position+height/1.85);
+				drawLine(x_position+width/2.25,y_position+height/1.85,x_position+width/2.1,y_position+height/2);
+				drawLine(x_position+width/2.1,y_position+height/2,x_position+width/2.2,y_position);
+
+				drawLine(x_position+width/2.1+0.2,y_position+height,x_position+width/2.25+0.2,y_position+height/1.85);
+				drawLine(x_position+width/2.25+0.2,y_position+height/1.85,x_position+width/2.1+0.2,y_position+height/2);
+				drawLine(x_position+width/2.1+0.2,y_position+height/2,x_position+width/2.2+0.2,y_position);*/
+			
+
 				glColor3f(color[0],color[1],color[2]);
 				drawLine(x_position,y_position,x_position,y_position+height);
 				drawLine(x_position,y_position+height,x_position+width,y_position+height);
 				drawLine(x_position+width,y_position+height,x_position+width,y_position);
 				drawLine(x_position+width,y_position,x_position,y_position);
+
 			glPopMatrix();
 		}
+
 	};
+
 
 
 
@@ -395,6 +429,7 @@ class Wall{
 		width = w;
 		height = h;
 	}
+
 	void draw(){
 		glPushMatrix();
 			glColor3f(0,1,0);
@@ -406,6 +441,74 @@ class Wall{
 	};
 };
 
+class PowerUp {
+	public:
+		int type;
+		float x;
+		float y;
+		float speed;
+		float width;
+		float height;
+		float color[3];
+		bool used;
+
+
+	PowerUp(int v_type, float v_x, float v_y,float w, float h){
+		type = v_type;
+		x = v_x;
+		y = v_y;
+		width = w;
+		height = h;
+		speed = powerUp_speed;
+		color[0] = 1;
+		color[1] = 0.5;
+		color[2] = 0;
+		used = false;
+
+	};
+
+	void draw(){
+		if (type == 1){
+			
+			glPushMatrix();
+				glColor3f(color[0],color[1],color[2]);
+				drawLine(x,y+height/2,x+width/2,y);
+				drawLine(x,y-height/2,x+width/2,y);
+				drawLine(x,y-height/2,x,y+height/2);
+				drawLine(x-width/2,y+height/2,x,y);
+				drawLine(x-width/2,y-height/2,x,y);
+				drawLine(x-width/2,y-height/2,x-width/2,y+height/2);
+			glPopMatrix();
+		}
+		else{
+			glPushMatrix();
+				glColor3f(color[0],color[1],color[2]);
+				drawLine(x+0.2,y,x+width/2,y+height/3);
+				drawLine(x+width/2,y+height/3,x+width/2,y-height/3);
+				drawLine(x+0.2,y,x+width/2,y-height/3);
+				drawLine(x+width/2,y+height/7,x+width/1.5,y+height/7);
+				drawLine(x+width/2,y-height/7,x+width/1.5,y-height/7);
+				drawLine(x+width/1.5,y+height/7,x+width/1.5,y-height/7);
+				drawLine(x+0.2,y+width/3,x+0.2,y-width/3);
+
+				drawLine(x-0.2,y,x-width/2,y+height/3);
+				drawLine(x-width/2,y+height/3,x-width/2,y-height/3);
+				drawLine(x-0.2,y,x-width/2,y-height/3);
+				drawLine(x-width/2,y+height/7,x-width/1.5,y+height/7);
+				drawLine(x-width/2,y-height/7,x-width/1.5,y-height/7);
+				drawLine(x-width/1.5,y+height/7,x-width/1.5,y-height/7);
+				drawLine(x-0.2,y+width/3,x-0.2,y-width/3);
+				drawLine(x-0.2,y,x+0.2,y);
+			glPopMatrix();
+		}
+		
+	};
+
+	void update(){
+		y -= speed;
+	}
+};
+
 class Manager{
 	public:
 		std::vector<Brick>  level_bricks;
@@ -413,6 +516,7 @@ class Manager{
 		std::vector<Explosion>  level_explosions;
 		Ball ball;
 		Platform platform;
+		std::vector<PowerUp>  level_power_ups;
 		float brick_separation;
 		float initial_x;
 		float initial_y;
@@ -458,7 +562,7 @@ class Manager{
 		level_wall.push_back(Wall (17,-13,1,27)); // R wall
 		level_wall.push_back(Wall(-17,-13,1,27)); // L wall
 		level_wall.push_back(Wall(-17,13,35,1));  // T wall
-		level_wall.push_back(Wall(-17,-15,35,1));  // T wall
+		//level_wall.push_back(Wall(-17,-15,35,1));  // T wall
 		
 	};
 
@@ -466,9 +570,18 @@ class Manager{
 		checkCollisionBallWall();
 		checkCollisionBallBrick();
 		checkCollisionBallPlatform();
+		checkCollisionPowerUpPlatform();
 		remove_bricks();
+		remove_power_ups();
 		ball.updatePosition();
-		
+		for (std::vector<PowerUp>::iterator p_up = level_power_ups.begin() ; p_up != level_power_ups.end(); ++p_up){
+			(*p_up).update();
+		}
+		if (ball.y_position < death_line) restart();
+	};
+
+	void restart(){
+		*this = Manager(brick_gap,brick_x_start,brick_y_start);
 	};
 
 	void checkCollisionBallWall(){
@@ -501,7 +614,7 @@ class Manager{
 			};
 		};
 	};
-	
+
 	void checkCollisionBallBrick(){
 		double x_point;
 		double y_point;
@@ -578,14 +691,54 @@ class Manager{
 		};
 	};
 
+	void checkCollisionPowerUpPlatform(){
+		float platform_center_x = platform.x_position;
+		float platform_center_y = platform.y_position;
+		for (int i=0; i < level_power_ups.size(); i++){
+			/*printf("I: %d \n",i);
+			printf("X: %f \n",x_point);
+			printf("Y: %f \n",y_point);
+			printf("Y WALL: %f \n",(brick_center_y - (.5*(*wall).height)));
+			printf("X WALL: %f \n",(brick_center_x - (.5*(*wall).width)));*/
+			if ((level_power_ups[i].x <= (platform_center_x + (platform.width/2)) && level_power_ups[i].x >= (platform_center_x - (platform.width/2))) &&
+				(level_power_ups[i].y <= (platform_center_y + (platform.height/2)) && level_power_ups[i].x >= (platform_center_y - (platform.height/2)))){
+				if (level_power_ups[i].type == 1) { 
+					ball.speed = ball.speed *1.4;
+				}
+				else{
+					platform.width = platform.width * 0.85;
+				};
+				level_power_ups[i].used = true;
+			};
+
+		};
+	};
+
 	void remove_bricks(){
+		double brick_center_x;
+		double brick_center_y;
 		for (int i=0; i < level_bricks.size(); i++){
 			if (level_bricks[i].hits == 0){
 				if (level_bricks[i].special){
 					Explosion exp(level_bricks[i].x_position+brick_width/2,level_bricks[i].y_position+brick_height/2);
 					level_explosions.push_back(exp);
 				}
+				if(level_bricks[i].bonus == 1 || level_bricks[i].bonus == 2 ){
+					brick_center_x = level_bricks[i].x_position + level_bricks[i].width/2;
+					brick_center_y = level_bricks[i].y_position + level_bricks[i].height/2;
+					level_power_ups.push_back(PowerUp(level_bricks[i].bonus,brick_center_x,brick_center_y,powerUp_width,powerUp_heigth));
+				};
 				level_bricks.erase(level_bricks.begin()+i);
+		
+			}
+		}
+	};
+
+	void remove_power_ups(){
+		for (int i=0; i < level_power_ups.size(); i++){
+			if (level_power_ups[i].used || level_power_ups[i].y < -16.0){ 
+			
+				level_power_ups.erase(level_power_ups.begin()+i);
 			}
 		}
 	};
@@ -602,13 +755,19 @@ class Manager{
 			level_explosions[i].drawexplosion();
 			level_explosions[i].updatepoints();
 			if (!level_explosions[i].exists) level_explosions.erase(level_explosions.begin()+i);
+		};
+		for (std::vector<PowerUp>::iterator p_up = level_power_ups.begin() ; p_up != level_power_ups.end(); ++p_up){
+			(*p_up).draw();
 		}
 		ball.draw();
 		platform.draw();
 	}
+
 };
 
 Manager sceneManager(brick_gap,brick_x_start,brick_y_start);
+
+
 
 void keyPressed (unsigned char key, int x, int y) {  
 	switch (key)
@@ -636,7 +795,7 @@ void render(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	calculateFPS();
+	//calculateFPS();
 	gluPerspective(140.0, w/h, 3.0, 10.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -644,7 +803,7 @@ void render(){
 			  0.0, 0.0, 0.0,
               0.0,1.0, 0.0);
 	//renderGrid();
-	//drawPoint(0,0,50,1,1,1);
+	drawPoint(0,0,50,1,1,1);
 	sceneManager.renderScene();
 	//printf("%f \n",fps);
 	glutSwapBuffers();
@@ -657,7 +816,7 @@ void init(){
 
 };
 
-void idle(){
+void idle(int n){
 	currentTimeDelta = glutGet(GLUT_ELAPSED_TIME);
 
     //  Calculate time passed
@@ -665,6 +824,7 @@ void idle(){
 	previousTimeDelta = currentTimeDelta;
 	sceneManager.update();
 	glutPostRedisplay();
+	glutTimerFunc(1000/frame_rate,idle,n);
 }
 
 int main (int argc, char** argv) {
@@ -684,9 +844,9 @@ int main (int argc, char** argv) {
 	glEnable(GL_POINT_SMOOTH);
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 	glutReshapeFunc(changeViewport);
-	glutIdleFunc(idle);
+	//glutIdleFunc(idle);
 	glutDisplayFunc(render);
-	glutIdleFunc(idle);
+	glutTimerFunc(1000/frame_rate,idle,0);
 	glutKeyboardFunc(keyPressed);
 	GLenum err = glewInit();
 	if (GLEW_OK != err) {
