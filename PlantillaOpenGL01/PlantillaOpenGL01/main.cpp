@@ -2,6 +2,7 @@
 #include <GL\glew.h>
 #include <GL\freeglut.h>
 #include <vector>
+#include <string.h>
 #include <ctime> // Needed for the true randomization
 #include <math.h>
 
@@ -37,7 +38,7 @@ float currentTime = 0, previousTime = 0;
 float currentTimeDelta = 0, previousTimeDelta = 0;
 float timeDelta = 0;
 float fps = 0;
-
+int countr = 0;
 
 
 void ejesCoordenada(float w) {
@@ -86,6 +87,13 @@ void drawPoint (int x, int y, int size, float r,float g, float b){
 		glVertex2f(x,y);
 	glEnd();
 }
+
+void renderText(float x, float y, char* text){
+	glRasterPos2i(x, y);
+	glColor3f(0.0f, 1.0f, 0.0f);
+	for (int i = 0; i < strlen(text); i++) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
+}
+
 
 void drawLine(float x1, float y1, float x2, float y2){
 	glLineWidth(line_size);
@@ -526,7 +534,7 @@ class Manager{
 		float initial_x;
 		float initial_y;
 
-		Manager(float gap,float start_x, float start_y):ball(-12,12,0.5,ball_speed),platform(platform_x_position,platform_y_position,platform_width,platform_height){
+		Manager(float gap,float start_x, float start_y):ball(0,-11.2,0.5,ball_speed),platform(platform_x_position,platform_y_position,platform_width,platform_height){
 		brick_separation = gap;
 		initial_x = start_x;
 		initial_y = start_y;
@@ -540,6 +548,8 @@ class Manager{
 		float acc_x = initial_x;
 		float acc_y = initial_y;
 		srand( time(0));
+
+		if((rand() % 2) == 1) ball.x_magnitude = -1;
 
 		/*---------------- Bricks creation------------------------*/
 		for (int i = 0; i<number_bricks;i++){
@@ -567,26 +577,28 @@ class Manager{
 		level_wall.push_back(Wall (17,-13,1,27)); // R wall
 		level_wall.push_back(Wall(-17,-13,1,27)); // L wall
 		level_wall.push_back(Wall(-17,13,35,1));  // T wall
-		//level_wall.push_back(Wall(-17,-15,35,1));  // T wall
 		
 	};
 
 	void update(){
-		checkCollisionBallWall();
-		checkCollisionBallBrick();
-		checkCollisionBallPlatform();
-		checkCollisionPowerUpPlatform();
-		remove_bricks();
-		remove_power_ups();
-		ball.updatePosition();
-		for (std::vector<PowerUp>::iterator p_up = level_power_ups.begin() ; p_up != level_power_ups.end(); ++p_up){
-			(*p_up).update();
-		}
-		if (ball.y_position < death_line) restart();
+		
+			checkCollisionBallWall();
+			checkCollisionBallBrick();
+			checkCollisionBallPlatform();
+			checkCollisionPowerUpPlatform();
+			remove_bricks();
+			remove_power_ups();
+			ball.updatePosition();
+			for (std::vector<PowerUp>::iterator p_up = level_power_ups.begin() ; p_up != level_power_ups.end(); ++p_up){
+				(*p_up).update();
+			}
+			if (ball.y_position < death_line) restart();
+
 	};
 
 	void restart(){
 		*this = Manager(brick_gap,brick_x_start,brick_y_start);
+		countr = 100;
 	};
 
 	void checkCollisionBallWall(){
@@ -789,6 +801,7 @@ class Manager{
 	};
 
 	void renderScene(){
+		
 		for (std::vector<Brick>::iterator brick = level_bricks.begin() ; brick != level_bricks.end(); ++brick){
 			(*brick).draw();
 			//(*brick).print();
@@ -796,16 +809,20 @@ class Manager{
 		for (std::vector<Wall>::iterator wall = level_wall.begin() ; wall != level_wall.end(); ++wall){
 			(*wall).draw();
 		}
-		for (int i=0; i<level_explosions.size(); i++){
-			level_explosions[i].drawexplosion();
-			level_explosions[i].updatepoints();
-			if (!level_explosions[i].exists) level_explosions.erase(level_explosions.begin()+i);
-		};
-		for (std::vector<PowerUp>::iterator p_up = level_power_ups.begin() ; p_up != level_power_ups.end(); ++p_up){
-			(*p_up).draw();
+		if(level_bricks.empty()) renderText(-3,0,"YOU HAVE WON!!!!");
+		else{	
+			for (int i=0; i<level_explosions.size(); i++){
+				level_explosions[i].drawexplosion();
+				level_explosions[i].updatepoints();
+				if (!level_explosions[i].exists) level_explosions.erase(level_explosions.begin()+i);
+			};
+			for (std::vector<PowerUp>::iterator p_up = level_power_ups.begin() ; p_up != level_power_ups.end(); ++p_up){
+				(*p_up).draw();
+			}
+			ball.draw();
+			platform.draw();
+		
 		}
-		ball.draw();
-		platform.draw();
 	}
 
 };
@@ -825,8 +842,6 @@ void keyPressed (unsigned char key, int x, int y) {
 		case 'D':
 			if(sceneManager.platform.x_position-1+platform_width/2 < 16.0f) sceneManager.platform.movePlatformXPosition(platform_x_position_delta);
 			break;
-		case 's':
-			sceneManager.ball.y_magnitude +=0.2;
 		default:
 			break;
 	};
@@ -850,6 +865,8 @@ void render(){
 	//renderGrid();
 	//drawPoint(0,0,50,1,1,1);
 	sceneManager.renderScene();
+	if (countr < 300) renderText(-14,-13.8,"Move platform with 'A' and 'D'");
+	countr++;
 	//printf("%f \n",fps);
 	glutSwapBuffers();
 	//11x 11y
