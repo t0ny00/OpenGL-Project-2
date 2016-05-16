@@ -3,7 +3,7 @@
 #include <GL\freeglut.h>
 #include <vector>
 #include <string.h>
-#include <ctime> // Needed for the true randomization
+#include <ctime> 
 #include <math.h>
 
 using namespace std;
@@ -35,10 +35,8 @@ using namespace std;
 
 int frameCount = 0;
 float currentTime = 0, previousTime = 0;
-float currentTimeDelta = 0, previousTimeDelta = 0;
-float timeDelta = 0;
 float fps = 0;
-int countr = 0;
+int countr = 0; //Instructions message time
 
 
 void ejesCoordenada(float w) {
@@ -198,7 +196,7 @@ class Explosion {
 		};
 	}
 
-	void updatepoints () {
+	void updatePoints () {
 		bool point_exists = false;
 		for(int i = 0; i < 10 ; i++){
 			if(explosion_points[i][2] > 0){
@@ -211,7 +209,7 @@ class Explosion {
 		if (!point_exists) exists = false;
 	};
 
-	void drawexplosion () {	
+	void drawExplosion () {	
 			for (int i = 0 ; i < 10 ; i++){
 				if(explosion_points[i][2] > 0){
 					glPushMatrix();
@@ -302,6 +300,7 @@ class Brick{
 				glColor3f(broken_color[0],broken_color[1],broken_color[2]);
 				if (broken_form == 1){
 					
+					/*--------------Draw 1 for a broken brick--------------------*/
 					drawLine(x_position,y_position,x_position,y_position+height);
 					drawLine(x_position,y_position+height,x_position+1.3,y_position+height);
 					drawLine(x_position+1.3,y_position+height,x_position+1.0,y_position+0.7);
@@ -317,6 +316,9 @@ class Brick{
 					drawLine(x_position+width,y_position+height,x_position+2.0,y_position+height);
 				}
 				else {
+
+					/*--------------Draw 2 for a broken brick--------------------*/
+
 					drawLine(x_position,y_position,x_position,y_position+height/2.7);
 					drawLine(x_position,y_position+height/2,x_position,y_position+height);
 					drawLine(x_position+width,y_position+height/1.2,x_position+width,y_position);
@@ -414,8 +416,8 @@ class Ball{
 		};
 
 		void updatePosition(){
-			x_position += speed*x_magnitude;//*timeDelta;
-			y_position += speed*y_magnitude;//*timeDelta;
+			x_position += speed*x_magnitude;
+			y_position += speed*y_magnitude;
 		};
 
 		void draw(){
@@ -436,6 +438,7 @@ class Wall{
 		float y;
 		float width;
 		float height; 
+
 	Wall(float x_position,float y_position, float w, float h){
 		x = x_position;
 		y = y_position;
@@ -574,6 +577,7 @@ class Manager{
 			acc_x += brick_width + brick_separation;
 		}
 
+		/*---------------------Walls creation-------------------------*/
 		level_wall.push_back(Wall (17,-13,1,27)); // R wall
 		level_wall.push_back(Wall(-17,-13,1,27)); // L wall
 		level_wall.push_back(Wall(-17,13,35,1));  // T wall
@@ -589,9 +593,12 @@ class Manager{
 			remove_bricks();
 			remove_power_ups();
 			ball.updatePosition();
-			for (std::vector<PowerUp>::iterator p_up = level_power_ups.begin() ; p_up != level_power_ups.end(); ++p_up){
-				(*p_up).update();
+			for (int i =0 ; i < level_power_ups.size(); i++){
+				level_power_ups[i].update();
 			}
+			for (int i=0; i<level_explosions.size(); i++){
+				level_explosions[i].updatePoints();
+			};
 			if (ball.y_position < death_line) restart();
 
 	};
@@ -804,7 +811,6 @@ class Manager{
 		
 		for (std::vector<Brick>::iterator brick = level_bricks.begin() ; brick != level_bricks.end(); ++brick){
 			(*brick).draw();
-			//(*brick).print();
 		}
 		for (std::vector<Wall>::iterator wall = level_wall.begin() ; wall != level_wall.end(); ++wall){
 			(*wall).draw();
@@ -812,8 +818,7 @@ class Manager{
 		if(level_bricks.empty()) renderText(-3,0,"YOU HAVE WON!!!!");
 		else{	
 			for (int i=0; i<level_explosions.size(); i++){
-				level_explosions[i].drawexplosion();
-				level_explosions[i].updatepoints();
+				level_explosions[i].drawExplosion();
 				if (!level_explosions[i].exists) level_explosions.erase(level_explosions.begin()+i);
 			};
 			for (std::vector<PowerUp>::iterator p_up = level_power_ups.begin() ; p_up != level_power_ups.end(); ++p_up){
@@ -827,6 +832,7 @@ class Manager{
 
 };
 
+/*-----------------------------Create Manager for the Game----------------------------------------*/
 Manager sceneManager(brick_gap,brick_x_start,brick_y_start);
 
 
@@ -855,35 +861,22 @@ void render(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//calculateFPS();
 	gluPerspective(140.0, w/h, 3.0, 10.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(0.0, 0.0,5.0,
 			  0.0, 0.0, 0.0,
               0.0,1.0, 0.0);
-	//renderGrid();
-	//drawPoint(0,0,50,1,1,1);
 	sceneManager.renderScene();
 	if (countr < 300) renderText(-14,-13.8,"Move platform with 'A' and 'D'");
 	countr++;
-	//printf("%f \n",fps);
 	glutSwapBuffers();
-	//11x 11y
-	//15x23
+
 }
 
 
-void init(){
-
-};
-
 void idle(int n){
-	currentTimeDelta = glutGet(GLUT_ELAPSED_TIME);
 
-    //  Calculate time passed
-    timeDelta = currentTimeDelta - previousTimeDelta;
-	previousTimeDelta = currentTimeDelta;
 	sceneManager.update();
 	glutPostRedisplay();
 	glutTimerFunc(1000/frame_rate,idle,n);
@@ -898,7 +891,6 @@ int main (int argc, char** argv) {
 	glutInitWindowSize(800,600);
 
 	glutCreateWindow("Opengl");
-	init();
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL, 0);
 	glEnable(GL_BLEND);
@@ -906,7 +898,6 @@ int main (int argc, char** argv) {
 	glEnable(GL_POINT_SMOOTH);
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 	glutReshapeFunc(changeViewport);
-	//glutIdleFunc(idle);
 	glutDisplayFunc(render);
 	glutTimerFunc(1000/frame_rate,idle,0);
 	glutKeyboardFunc(keyPressed);
